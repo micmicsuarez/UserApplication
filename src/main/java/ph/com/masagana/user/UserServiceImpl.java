@@ -34,8 +34,7 @@ public class UserServiceImpl implements UserService {
         if(usernameExists) {
             throw new EntityException(ApiError.USERNAME_EXISTS_ALREADY.value());
         }
-
-        return repository.save(user);
+        return repository.saveAndFlush(user);
     }
 
     @Transactional
@@ -53,7 +52,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User update(User user) {
-        return repository.save(user);
+        return repository.saveAndFlush(user);
     }
 
     @Transactional

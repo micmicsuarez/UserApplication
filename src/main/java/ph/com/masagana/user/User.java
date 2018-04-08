@@ -65,7 +65,7 @@ public class User implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @NonNull
-    Status status = Status.UNVERIFIED;
+    private Status status = Status.UNVERIFIED;
 
     @Nullable
     private String addressOne;

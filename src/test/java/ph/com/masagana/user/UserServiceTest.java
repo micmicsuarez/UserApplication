@@ -22,7 +22,7 @@ public class UserServiceTest {
 
     @Before
     public void setUp() {
-        userService = new UserServiceImpl(userRepository);
+        userService = new UserService(userRepository);
     }
 
     @Test

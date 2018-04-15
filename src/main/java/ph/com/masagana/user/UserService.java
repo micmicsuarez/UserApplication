@@ -1,19 +1,68 @@
 package ph.com.masagana.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.querydsl.QPageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ph.com.masagana.exception.EntityException;
+import ph.com.masagana.type.ApiError;
 
 import java.util.UUID;
 
-public interface UserService {
+@Service
+public class UserService {
 
-    User create(User user) throws EntityException;
+    private UserRepository repository;
 
-    User fetchById(UUID id);
+    @Autowired
+    UserService(UserRepository repository) {
+        this.repository = repository;
+    }
 
-    User fetchByEmailAddress(String emailAddress);
+    @Transactional
+    public User create(User user) throws EntityException {
+        boolean emailAddressExists = emailAddressExists(user.getEmailAddress());
 
-    User update(User user);
+        if (emailAddressExists) {
+            throw new EntityException(ApiError.EMAIL_ADDRESS_EXISTS.value());
+        }
 
-    Page<User> fetchAll(int pageNumber, int numberOfItems);
+        boolean usernameExists = usernameExists(user.getUsername());
+        if(usernameExists) {
+            throw new EntityException(ApiError.USERNAME_EXISTS_ALREADY.value());
+        }
+        return repository.saveAndFlush(user);
+    }
+
+    @Transactional
+    public User fetchById(UUID id) {
+        return repository.findById(id).get();
+    }
+
+    @Transactional
+    public User fetchByEmailAddress(String emailAddress) {
+        return repository.findByEmailAddress(emailAddress);
+    }
+
+    @Transactional
+    public User update(User user) {
+        return repository.saveAndFlush(user);
+    }
+
+    @Transactional
+    public Page<User> fetchAll(int pageNumber, int numberOfItems) {
+        Pageable pageable = new QPageRequest(pageNumber, numberOfItems);
+
+        return repository.findAll(pageable);
+    }
+
+    private boolean emailAddressExists(String emailAddress) {
+        return repository.findByEmailAddress(emailAddress) != null;
+    }
+
+    private boolean usernameExists(String username) {
+        return repository.findByUsername(username) != null;
+    }
 }

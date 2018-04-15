@@ -1,6 +1,6 @@
 package ph.com.masagana.validator;
 
-public class ObjectValidator {
+public class UniqueValidator {
 
     private String fieldName;
 

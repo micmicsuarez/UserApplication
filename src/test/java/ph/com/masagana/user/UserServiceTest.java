@@ -29,7 +29,7 @@ public class UserServiceTest {
     public void create_givenAValidRequest_shouldCreateUser() throws Exception {
         User user = new User();
 
-        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userRepository.saveAndFlush(any(User.class))).thenReturn(new User());
 
         User savedUser = userService.create(user);
 
@@ -40,7 +40,7 @@ public class UserServiceTest {
     public void create_givenAValidRequest_shouldSetTheInitialStatusOfUserToUnverified() throws Exception {
         User user = new User();
 
-        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userRepository.saveAndFlush(any(User.class))).thenReturn(user);
 
         User savedUser = userService.create(user);
 
@@ -62,7 +62,7 @@ public class UserServiceTest {
         User user = new User();
         user.setUsername("micmic");
 
-        when(userRepository.findByUsername("micmic")).thenReturn(new User());
+        when(userRepository.findByUsername("micmic")).thenReturn(user);
 
         userService.create(user);
     }

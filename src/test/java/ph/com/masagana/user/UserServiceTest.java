@@ -82,7 +82,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void fetchById_givenNonExistingUserId_shouldReturnNull() throws Exception {
+    public void fetchById_givenNonExistingUserId_shouldReturnNull() {
         UUID userId = new UUID(5, 10);
 
         when(userRepository.findById(userId)).thenReturn(null);

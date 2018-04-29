@@ -10,6 +10,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import ph.com.masagana.UserConfig;
 
+import javax.validation.ConstraintViolationException;
+
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {UserConfig.class})
 @Sql("UserTestData.sql")
@@ -38,5 +40,13 @@ public class UserServiceIntegrationTest {
         User updatedUser = userService.update(user);
 
         Assert.assertEquals("micmic", updatedUser.getUsername());
+    }
+
+    @Test(expected = ConstraintViolationException.class)
+    public void update_givenARequestWithInvalidEmailAddress_shouldThrowConstraintViolationException() throws Exception {
+        User user = userService.fetchByEmailAddress("sample@emailaddress.com");
+        user.setEmailAddress("michael@");
+
+        userService.update(user);
     }
 }

@@ -9,6 +9,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import ph.com.masagana.exception.EntityException;
 import ph.com.masagana.type.Status;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -65,5 +68,27 @@ public class UserServiceTest {
         when(userRepository.findByUsername("micmic")).thenReturn(new User());
 
         userService.create(user);
+    }
+
+    @Test
+    public void fetchById_givenExistingUserId_shouldReturnAUser() {
+        User user = new User();
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        User fetchedUser = userService.fetchById(user.getId());
+
+        Assert.assertNotNull("Given the existing user id should return a user", fetchedUser);
+    }
+
+    @Test
+    public void fetchById_givenNonExistingUserId_shouldReturnNull() throws Exception {
+        UUID userId = new UUID(5, 10);
+
+        when(userRepository.findById(userId)).thenReturn(null);
+
+        User fetchedUser = userService.fetchById(userId);
+
+        Assert.assertNull("Given non-existing user id should return a null result", fetchedUser);
     }
 }

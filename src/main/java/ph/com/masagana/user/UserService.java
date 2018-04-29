@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ph.com.masagana.exception.EntityException;
 import ph.com.masagana.type.ApiError;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -38,7 +39,8 @@ public class UserService {
 
     @Transactional
     public User fetchById(UUID id) {
-        return repository.findById(id).get();
+        Optional<User> user = repository.findById(id);
+        return user != null ? user.get() : null;
     }
 
     @Transactional

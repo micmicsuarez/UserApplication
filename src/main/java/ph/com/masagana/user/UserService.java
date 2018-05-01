@@ -24,14 +24,12 @@ public class UserService {
 
     @Transactional
     public User create(User user) throws EntityException {
-        boolean emailAddressExists = emailAddressExists(user.getEmailAddress());
 
-        if (emailAddressExists) {
+        if (user.getEmailAddress() != null && repository.existsByEmailAddress(user.getEmailAddress())) {
             throw new EntityException(ApiError.EMAIL_ADDRESS_EXISTS.value());
         }
 
-        boolean usernameExists = usernameExists(user.getUsername());
-        if(usernameExists) {
+        if(user.getUsername() != null && repository.existsByUsername(user.getUsername())) {
             throw new EntityException(ApiError.USERNAME_EXISTS_ALREADY.value());
         }
         return repository.saveAndFlush(user);
@@ -58,13 +56,5 @@ public class UserService {
         Pageable pageable = new QPageRequest(pageNumber, numberOfItems);
 
         return repository.findAll(pageable);
-    }
-
-    private boolean emailAddressExists(String emailAddress) {
-        return repository.findByEmailAddress(emailAddress) != null;
-    }
-
-    private boolean usernameExists(String username) {
-        return repository.findByUsername(username) != null;
     }
 }
